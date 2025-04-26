@@ -1,0 +1,241 @@
+class HashMaps{
+     // construct ransom from magazine
+    public boolean canConstruct(String ransomNote, String magazine) {
+        HashMap<Character,Integer> charMap = new HashMap<>();
+
+        for(int i=0;i<magazine.length();i++){
+            char ch = magazine.charAt(i);
+            charMap.put(ch,charMap.getOrDefault(ch,0)+1);
+        }
+
+        for(int i=0;i<ransomNote.length();i++){
+            char ch = ransomNote.charAt(i);
+            
+            if((!charMap.containsKey(ch)) || charMap.get(ch)<1) return false;
+            charMap.put(ch,charMap.get(ch)-1);
+        }
+
+        return true;  
+    }
+
+    //Isomorphic strings  - with string transformations
+    private String transformString(String s) {
+        Map<Character, Integer> indexMapping = new HashMap<>();
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < s.length(); ++i) {
+            char c1 = s.charAt(i);
+
+            if (!indexMapping.containsKey(c1)) {
+                indexMapping.put(c1, i);
+            }
+
+            builder.append(Integer.toString(indexMapping.get(c1)));
+            builder.append(" "); // append space so that 1 10 & 11 0 remains different
+        }
+        return builder.toString();
+    }
+
+    public boolean isIsomorphic(String s, String t) {
+        return transformString(s).equals(transformString(t));
+    }
+    // performing isomorphic logic on s and t
+    public boolean isIsomorphic(String s, String t) {
+        if (s.isEmpty() && t.isEmpty()) {
+            return true;
+        }
+        if (s.isEmpty() || t.isEmpty()) {
+            return false;
+        }
+        if (s.length() != t.length()) {
+            return false;
+        }
+
+       return (checkIsomorpohic(s, t) && checkIsomorpohic(t, s));
+
+    }
+    public boolean checkIsomorpohic(String s, String t) {
+        Map<Character, Character> charMap = new HashMap();
+        for (int i = 0; i< s.length(); i++) {
+            Character sc = (Character) s.charAt(i);
+            Character tc = (Character) t.charAt(i);
+
+            if (charMap.containsKey(sc)) {
+                if (!charMap.get(sc).equals(tc)) {
+                    return false;
+                }
+            }
+            else {
+                charMap.put(sc, tc);
+            }
+        }
+        return true;
+    }
+
+    // pattern match
+    public boolean wordPattern(String pattern, String s) {
+        HashMap map_index = new HashMap(); // we use char and String to store key
+        String[] words = s.split(" ");
+
+        if (words.length != pattern.length())
+            return false;
+
+        for (Integer i = 0; i < words.length; i++) {
+            char c = pattern.charAt(i);
+            String w = words[i];
+
+            if (!map_index.containsKey(c))
+                map_index.put(c, i);
+
+            if (!map_index.containsKey(w))
+                map_index.put(w, i);
+
+            if (map_index.get(c) != map_index.get(w))
+                return false;
+        }
+
+        return true;
+    }
+
+    //anagrams - using int[]
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) {
+            return false;
+        }
+        int[] counter = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            counter[s.charAt(i) - 'a']++;
+            counter[t.charAt(i) - 'a']--;
+        }
+        for (int count : counter) {
+            if (count != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean isAnagram(String s, String t) { // using hashMap
+        HashMap<Character,Integer> charIndex = new HashMap<>();
+
+        if(s.length()!=t.length())
+            return false;
+
+        for(char ch: s.toCharArray()){
+            charIndex.put(ch,charIndex.getOrDefault(ch,0)+1);
+        }
+
+        for(char ch: t.toCharArray()){
+            if(!charIndex.containsKey(ch)||charIndex.get(ch)< 1)
+                return false;
+            charIndex.put(ch,charIndex.get(ch)-1);
+        }
+
+        return true;
+        
+    }
+
+    // Group of anagrams -using sorting
+    public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs.length == 0) return new ArrayList();
+        Map<String, List> ans = new HashMap<String, List>();
+        for (String s : strs) {
+            char[] ca = s.toCharArray();
+            Arrays.sort(ca);
+            String key = String.valueOf(ca);
+            if (!ans.containsKey(key)) ans.put(key, new ArrayList());
+            ans.get(key).add(s);
+        }
+        return new ArrayList(ans.values());
+    }
+    public List<List<String>> groupAnagrams(String[] strs) { // without sorting
+        if (strs.length == 0) return new ArrayList();
+        Map<String, List> ans = new HashMap<String, List>();
+        int[] count = new int[26];
+        for (String s : strs) {
+            Arrays.fill(count, 0);
+            for (char c : s.toCharArray()) count[c - 'a']++;
+
+            StringBuilder sb = new StringBuilder("");
+            for (int i = 0; i < 26; i++) {
+                sb.append('#');
+                sb.append(count[i]);
+            }
+            String key = sb.toString();
+            if (!ans.containsKey(key)) ans.put(key, new ArrayList());
+            ans.get(key).add(s);
+        }
+        return new ArrayList(ans.values());
+    }
+
+    // happy number sum of squares of number till reaches 1
+    private int getNext(int n) { // calculates sum of sqaures
+        int totalSum = 0;
+        while (n > 0) {
+            int d = n % 10;
+            n = n / 10;
+            totalSum += d * d;
+        }
+        return totalSum;
+    }
+    // using hashSet
+    public boolean isHappy(int n) {
+        Set<Integer> seen = new HashSet<>();
+        while (n != 1 && !seen.contains(n)) {
+            seen.add(n);
+            n = getNext(n);
+        }
+        return n == 1;
+    }
+    //using linked list concept- Floyd's Cycle-Finding Algorithm
+    public boolean isHappy(int n) {
+        int slowRunner = n;
+        int fastRunner = getNext(n);
+        while (fastRunner != 1 && slowRunner != fastRunner) {
+            slowRunner = getNext(slowRunner);
+            fastRunner = getNext(getNext(fastRunner));
+        }
+        return fastRunner == 1;
+    }
+
+    // finding two abs but different opperation
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        HashMap<Integer,Integer> numIndex = new HashMap<>();
+
+        for(int i =0;i<nums.length;i++){
+            if(numIndex.containsKey(nums[i])&& ((Math.abs(numIndex.get(nums[i])-i)<=k))){
+                return true;
+            }
+            numIndex.put(nums[i],i);
+        }
+        return false;
+    }
+
+    // longest consecutive sequence - without sorting
+    public int longestConsecutive(int[] nums) {
+        int maxCount = 0;
+        Set<Integer> s = new HashSet<>();
+
+        // Add all numbers to the set
+        for (int num : nums) {
+            s.add(num);
+        }
+
+        for (int num : s) {
+            // Only start counting if it's the beginning of a sequence
+            if (!s.contains(num - 1)) {
+                int currentNum = num;
+                int count = 1;
+
+                // Count consecutive numbers
+                while (s.contains(currentNum + 1)) {
+                    currentNum++;
+                    count++;
+                }
+
+                maxCount = Math.max(maxCount, count);
+            }
+        }
+
+        return maxCount;
+    }
+}
