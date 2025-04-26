@@ -1,0 +1,178 @@
+class TwoPointers{
+    public boolean isPalindrome(String s) 
+    {
+        int len=s.length();
+        int a=0,b=len-1;
+        while(a<b)
+        {
+            int c=val(s.charAt(a)),d=val(s.charAt(b));
+            if(c==-1)
+            {
+                a++;
+                continue;
+            } 
+            if(d==-1)
+            {
+                b--;
+                continue;
+            }
+            if(c!=d)
+            {
+                return false;
+            }
+            a++;b--;
+        }
+        return true;
+    }
+    int val(char ch)
+    {
+        if(ch>='a' && ch<='z') return ch;
+        if(ch>='A' && ch<='Z') return ch-'A'+'a';
+        if(ch>='0' && ch<='9') return ch;
+        return -1;
+    }
+
+    // Subsequence for large datasets
+    private HashMap getCharacterIndices(String t){
+        HashMap<Character,List<Integer>> cIndices = new HashMap<>();
+        for(int i=0; i<t.length();i++)
+        cIndices.computeIfAbsent(t.charAt(i),k -> new ArrayList<>()).add(i);
+        
+        return cIndices;
+    }
+    public boolean isSubsequence(String s, String t) {
+        if(s.length()>t.length())
+            return false;
+        
+        HashMap<Character,List<Integer>> charIndices = new HashMap<>();
+
+        charIndices = getCharacterIndices(t);
+
+        int matchedChars = 0;
+        int lastIndex = -1;
+        
+        for (char letter : s.toCharArray()){
+            if(!charIndices.containsKey(letter)){
+                return false;
+            }
+
+            for(Integer i : charIndices.get(letter)){
+                if(lastIndex<i){
+                    lastIndex=i;
+                    matchedChars++;
+                    break;
+                }
+                continue;
+            }
+
+        }   
+        return matchedChars==s.length();
+    }
+    // faster approach
+    public boolean isSubsequence(String s, String t) {
+        if (s.isEmpty()) return true;
+        if (s.length() > t.length()) return false;
+
+        int lastFound = -1;
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            lastFound = t.indexOf(c, lastFound + 1);
+
+            if (lastFound == -1) return false; // character not found in order
+        }
+
+        return true;
+    }
+
+    // sorted approach
+    public int[] twoSum(int[] numbers, int target) {
+        int left=0,right=numbers.length-1;
+
+        while(left<right){
+            if(numbers[left]+numbers[right]>target)
+                right--;
+            else if(numbers[left]+numbers[right]<target)
+                left++;
+            else
+                return new int[] {left+1,right+1};
+ 
+        }
+        return new int[] {-1,-1};
+    }
+    //linear apprach
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>(); // number -> index
+
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+
+            if (map.containsKey(complement)) {
+                return new int[] { map.get(complement), i };
+            }
+
+            map.put(nums[i], i);
+        }
+
+        return new int[] { -1, -1 }; // fallback if no solution found
+    }
+
+    //water trapped
+    public static int maxArea(int[] height) {
+        int maxWater = 0;
+        int l = 0, r = height.length - 1;
+
+        while (l < r) {
+            int minH = Math.min(height[l], height[r]);
+            maxWater = Math.max(maxWater, minH * (r - l));
+
+            while (l < r && height[l] <= minH) l++;
+            while (l < r && height[r] <= minH) r--;
+        }
+
+        return maxWater;
+    }
+
+    //tree
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+
+        for(int i = 0; i< nums.length && nums[i]<=0; i++){
+            if(i==0||nums[i]!=nums[i-1]){
+                twoSum(i,nums,res);
+            }
+        }
+        return res;
+        
+    }
+
+    private void twoSum(int i,int[] nums, List<List<Integer>> res){
+        var seen = HashSet<Integer>();
+
+        for(int j=i+1;j<nums.length;j++){
+            int compliment = -nums[i] - nums[j];
+
+            if(seen.contains(compliment)){
+                res.add(Arrays.asList(nums[i],nums[j],compliment));
+                while (j + 1 < nums.length && nums[j] == nums[j + 1]) ++j;
+            }
+
+            seen.add(nums[j]);
+        }
+    }
+
+    private void twoSumII(int i,int[] nums, List<List<Integer>> res){
+        int lo=i+1,hi=nums.length-1;
+
+        while(lo<hi){
+            int sum = nums[i]+nums[lo]+nums[hi];
+            if(sum>0) hi--;
+            else if(sum<0) lo++;
+            else{
+                res.add(Arrays.asList(nums[i],nums[lo++],nums[hi--]));
+                while(lo<hi && nums[lo]==nums[lo-1])lo++;
+            }
+        }
+    }
+}
