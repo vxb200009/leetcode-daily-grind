@@ -1,0 +1,112 @@
+class SlidingWindow{
+    //sliding window approach - find minSubArrayLen to reach the target
+    public int minSubArrayLen(int target, int[] nums) {
+        int left = 0, right = 0, sumOfCurrentWindow = 0;
+        int res = Integer.MAX_VALUE;
+
+        for(right = 0; right < nums.length; right++) {
+            sumOfCurrentWindow += nums[right];
+
+            while (sumOfCurrentWindow >= target) {
+                res = Math.min(res, right - left + 1);
+                sumOfCurrentWindow -= nums[left++];
+            }
+        }
+
+        return res == Integer.MAX_VALUE ? 0 : res;
+    }
+
+    //Hasmap way
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> chars = new HashMap();
+
+        int left = 0;
+        int right = 0;
+
+        int res = 0;
+        while (right < s.length()) {
+            char r = s.charAt(right);
+            chars.put(r, chars.getOrDefault(r, 0) + 1);
+
+            while (chars.get(r) > 1) {
+                char l = s.charAt(left);
+                chars.put(l, chars.get(l) - 1);
+                left++;
+            }
+
+            res = Math.max(res, right - left + 1);
+
+            right++;
+        }
+        return res;
+    }
+    public int lengthOfLongestSubstring(String s) { // in single go 
+        int left=0,right=0;
+        int ans=0;
+        Map <Character,Integer> char_window = new HashMap<>();
+        
+       for(right=0;right<s.length();right++){
+        char r = s.charAt(right);
+        if(char_window.containsKey(r)){
+            left = Math.max(left,char_window.get(r)+1); // places the left directly at previous occurance rather than iterating
+        }
+        char_window.put(r,right);
+        ans = Math.max(ans,right-left+1);
+       }
+
+        return ans;
+    }
+
+    // find permutations of substring in the string
+    private HashMap<String, Integer> wordCount = new HashMap<String, Integer>();
+    private int n;
+    private int wordLength;
+    private int substringSize;
+    private int k;
+
+    private void slidingWindow(int left, String s, List<Integer> answer) {
+        HashMap<String, Integer> wordsFound = new HashMap<>();
+        int wordsUsed = 0;
+        boolean excessWord = false;
+
+        for(int right=left; right< n-wordLength;right+=wordLength){
+            String sub = s.substring(right,right+wordLength);
+            if(!wordCount.containsKey(sub)){
+                wordsFound.clear();
+                wordsUsed = 0;
+                left = right+wordLength;
+            }
+            else
+            {
+                while(right - left == substringSize||excessWord){
+                    String leftmostWord = s.substring(left,left+wordLength);
+                    left+=wordLength;
+                    wordsFound.put(leftmostWord,wordsFound.get(leftmostWord)-1);
+
+                    if (
+                        wordsFound.get(leftmostWord) >=
+                        wordCount.get(leftmostWord)
+                    ) {
+                        // This word was an excess word
+                        excessWord = false;
+                    } else {
+                        // Otherwise we actually needed it
+                        wordsUsed--;
+                    }
+                }
+                 wordsFound.put(sub, wordsFound.getOrDefault(sub, 0) + 1);
+                if (wordsFound.get(sub) <= wordCount.get(sub)) {
+                    wordsUsed++;
+                } else {
+                    // Found too many instances already
+                    excessWord = true;
+                }
+
+                if (wordsUsed == k && !excessWord) {
+                    // Found a valid substring
+                    answer.add(left);
+                }
+
+            }
+        } 
+}
