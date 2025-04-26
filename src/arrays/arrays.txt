@@ -1,0 +1,428 @@
+class Arrays{
+     //productExceptSelf
+     public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] answer = new int[n];
+        Arrays.fill(answer,1);
+        int curr = 1;
+
+        for(int i=0; i<n; i++){
+            answer[i]*=curr;
+            curr*=nums[i];
+        }
+
+        curr = 1;
+
+        for(int i=n-1; i>=0; i--){
+            answer[i]*=curr;
+            curr*=nums[i];
+        }
+
+        return answer;
+        
+    }
+
+    //product of all elements except itself
+    public int[] productExceptSelf(int[] nums) {
+        int[] answer = new int[nums.length]; 
+        
+        answer[0]=1;
+        
+        for(int i=1; i< nums.length;i++){
+            answer[i] = answer[i-1]*nums[i-1];
+        }
+        int postfix = 1;
+         for(int i=nums.length-1; i>=0;i--){ 
+            answer[i] = postfix*answer[i];
+            postfix*=nums[i];
+        }
+
+        
+
+        return answer;
+    }
+
+    // one pass
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int totalGain;
+        int curGain;
+        int answer;
+
+        totalGain = 0;
+        curGain = 0;
+        answer = 0;
+        for(int i = 0; i < gas.length; i++){
+            curGain+= gas[i] - cost[i];
+
+            totalGain += gas[i]-cost[i];
+
+            if(curGain < 0){
+                answer= i+1;
+                curGain = 0;
+            }
+        }
+
+        return totalGain>=0? answer:-1;
+        
+    }
+
+    //learn one pass DP for this
+    public int candy(int[] ratings) {
+        int[] candies = new int[ratings.length];
+        Arrays.fill(candies,1);
+
+        for(int i = 1; i<ratings.length;i++){
+            if(ratings[i]>ratings[i-1]){
+                candies[i] = candies[i-1]+1;
+            }
+        }
+        int sum = candies[ratings.length-1];
+        for(int i=ratings.length-2 ; i>=0;i--){
+            if(ratings[i]>ratings[i+1]){
+                candies[i] = Math.max(candies[i],candies[i+1]+1);
+            }
+            sum+=candies[i];
+        }
+
+        return sum;
+        
+    }
+
+    // one pass Two pointer approach
+    public int trap(int[] height) {
+        int left = 0, right = height.length - 1;
+        int ans = 0;
+        int left_max = 0, right_max = 0;
+        while (left < right) {
+            if (height[left] < height[right]) {
+                left_max = Math.max(left_max, height[left]);
+                ans += left_max - height[left];
+                ++left;
+            } else {
+                right_max = Math.max(right_max, height[right]);
+                ans += right_max - height[right];
+                --right;
+            }
+        }
+        return ans;
+    }
+
+    // Roman to integer; right-to-left pass
+    static Map<String, Integer> values= new HashMap<>();
+    static{
+        values.put("M", 1000);
+        values.put("D", 500);
+        values.put("C", 100);
+        values.put("L", 50);
+        values.put("X", 10);
+        values.put("V", 5);
+        values.put("I", 1);
+    }
+    public int romanToInt(String s) {
+        String lastSymbol = s.substring(s.length()-1);
+        int prevValue;
+        int result = 0;
+        result+=values.get(lastSymbol);
+        prevValue = values.get(lastSymbol);
+        for (int i = s.length()-2 ; i>=0 ; i--){
+            String currentSymbol = s.substring(i,i+1);
+            int curValue = values.get(currentSymbol);
+            if(curValue< prevValue){
+                result-=curValue;
+            }
+            else{
+                result+=curValue;
+            }
+            prevValue = curValue;
+        }
+
+        return result;
+    }
+
+    // Two way architecture
+    static Map<String, Integer> values= new HashMap<>();
+    static {
+        values.put("I", 1);
+        values.put("V", 5);
+        values.put("X", 10);
+        values.put("L", 50);
+        values.put("C", 100);
+        values.put("D", 500);
+        values.put("M", 1000);
+        values.put("IV", 4);
+        values.put("IX", 9);
+        values.put("XL", 40);
+        values.put("XC", 90);
+        values.put("CD", 400);
+        values.put("CM", 900);
+    }
+    public int romanToInt(String s) {
+        int result =0;
+        int length = s.length()-1;
+        int i = 0;
+        while(i<=length){
+            if(i<length){
+                String twoSymbols = s.substring(i,i+2);
+                if(values.containsKey(twoSymbols)){
+                    result+=values.get(twoSymbols);
+                    i=i+2;
+                    continue;
+                } 
+            }
+            String oneSymbol = s.substring(i,i+1);
+            result+=values.get(oneSymbol);
+            i++;
+        }
+        return result;
+    }
+
+    //Integer to roman one pass
+    private static final int[] values = {
+        1000,
+        900,
+        500,
+        400,
+        100,
+        90,
+        50,
+        40,
+        10,
+        9,
+        5,
+        4,
+        1,
+    };
+    private static final String[] symbols = {
+        "M",
+        "CM",
+        "D",
+        "CD",
+        "C",
+        "XC",
+        "L",
+        "XL",
+        "X",
+        "IX",
+        "V",
+        "IV",
+        "I",
+    };
+    public String intToRoman(int num) {
+        StringBuilder sb = new StringBuilder();
+
+        for(int i = 0; i< symbols.length && num>0 ; i++){
+                while(num>=values[i]){
+                    num -= values[i];
+                    sb.append(symbols[i]);
+                }
+            
+        }
+        return sb.toString();
+    
+    }
+
+    // find last lengthy word
+    public int lengthOfLastWord(String s) {
+         s = s.trim();
+        return s.length() - s.lastIndexOf(" ") - 1;
+        
+    }
+    public int lengthOfLastWord(String s) {
+        int p = s.length(), length = 0;
+        while (p > 0) {
+            p--;
+            // we're in the middle of the last word
+            if (s.charAt(p) != ' ') {
+                length++;
+            }
+            // here is the end of last word
+            else if (length > 0) {
+                return length;
+            }
+        }
+        return length;
+    }
+
+    // Divide and conquer technique
+    public String longestCommonPrefix(String[] strs) {
+        if(strs.length==0 || strs ==null) return "";
+        return longestCommonPrefix(strs, 0, strs.length-1);
+        
+    }
+
+    private String longestCommonPrefix(String[] strs, int l, int r){
+        if(l==r) return strs[l];
+
+        int mid = (l+r)/2;
+        String lcpLeft = longestCommonPrefix(strs,l,mid);
+        String lcpRight = longestCommonPrefix(strs,mid+1, r);
+        return commonPrefix(lcpLeft,lcpRight);
+    }
+
+    private String commonPrefix(String left,String right){
+        int min = Math.min(left.length(),right.length());
+        for(int i = 0; i<min;i++){
+            if(left.charAt(i)!=right.charAt(i)) return left.substring(0,i);
+        }
+        return left.substring(0,min);
+    }
+
+    // my own way
+    public String reverseWords(String s) {
+        StringBuilder sb = new StringBuilder();
+
+        if(s.lastIndexOf(" ")==0) return s;
+
+        int lastWordIndex = s.length();
+
+        for(int i=s.length()-1 ; i>=0;i--){
+            if(i==0 || s.charAt(i)==' '&& s.charAt(i-1)!=' '){
+                
+                sb.append(s.substring(i,lastWordIndex).trim());
+                sb.append(' ');
+                
+                lastWordIndex=i;
+            }
+        }
+        return sb.toString().trim();
+        
+    }
+
+    // zigZag String traversal approach
+    public String convert(String s, int numRows) {
+        if(numRows==1){
+            return s;
+        }
+        StringBuilder sb = new StringBuilder();
+        int size = s.length();
+
+        int charsInSection = 2 * (numRows-1);
+
+        for( int curRow=0 ; curRow<numRows;curRow++){
+            int index = curRow;
+
+            while(index < size){
+                sb.append(s.charAt(index));
+
+                if(curRow!=0 && curRow!=numRows-1){
+                    int charInBtw = charsInSection - 2 * curRow;
+                    int secondIndex = index + charInBtw;
+                    if(secondIndex<size){
+                        sb.append(s.charAt(secondIndex));
+                    }
+                }
+                index+=charsInSection;
+            }
+        }
+        return sb.toString();
+        
+    }
+
+    //Double Hash rabin Karp -learn it again
+    public int hashValue(String string, int RADIX, int MOD, int m) {
+        long ans = 0;
+        long factor = 1;
+        for (int i = m - 1; i >= 0; i--) {
+            ans = (ans + (string.charAt(i) - 'a') * factor) % MOD;
+            factor = (factor * RADIX) % MOD;
+        }
+        return (int) ans;
+    }
+
+    public int strStr(String haystack, String needle) {
+        int m = needle.length();
+        int n = haystack.length();
+        if (n < m) return -1;
+
+        // CONSTANTS
+        int RADIX = 26;
+        int MOD = 1000000033;
+        long MAX_WEIGHT = 1;
+
+        for (int i = 0; i < m; i++) MAX_WEIGHT = (MAX_WEIGHT * RADIX) % MOD;
+
+        // Compute hash of needle
+        long hashNeedle = hashValue(needle, RADIX, MOD, m), hashHay = 0;
+
+        // Check for each m-substring of haystack, starting at index windowStart
+        for (int windowStart = 0; windowStart <= n - m; windowStart++) {
+            if (windowStart == 0) {
+                // Compute hash of the First Substring
+                hashHay = hashValue(haystack, RADIX, MOD, m);
+            } else {
+                // Update Hash using Previous Hash Value in O(1)
+                hashHay = (((hashHay * RADIX) % MOD) -
+                    (((int) (haystack.charAt(windowStart - 1) - 'a') *
+                            MAX_WEIGHT) %
+                        MOD) +
+                    (int) (haystack.charAt(windowStart + m - 1) - 'a') +
+                    MOD) %
+                MOD;
+            }
+            // If the hash matches, Check Character by Character.
+            // Because of Mod, spurious hits can be there.
+            if (hashNeedle == hashHay) {
+                for (int i = 0; i < m; i++) {
+                    if (needle.charAt(i) != haystack.charAt(i + windowStart)) {
+                        break;
+                    }
+                    if (i == m - 1) {
+                        return windowStart;
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    //text justification
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        List<String> result = new ArrayList<>();
+        int index = 0;
+
+        while (index < words.length) {
+            int totalChars = words[index].length();
+            int last = index + 1;
+
+            // Find how many words can fit into the current line
+            while (last < words.length) {
+                if (totalChars + 1 + words[last].length() > maxWidth) break;
+                totalChars += 1 + words[last].length();
+                last++;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            int numberOfWords = last - index;
+            int numberOfSpaces = maxWidth - totalChars + (numberOfWords - 1);
+
+            // Last line or single-word line -> left-justified
+            if (last == words.length || numberOfWords == 1) {
+                for (int i = index; i < last; i++) {
+                    sb.append(words[i]);
+                    if (i != last - 1) sb.append(" ");
+                }
+                // Fill the remaining spaces at the end
+                int remaining = maxWidth - sb.length();
+                while (remaining-- > 0) sb.append(" ");
+            } else {
+                int spaces = numberOfSpaces / (numberOfWords - 1);
+                int extra = numberOfSpaces % (numberOfWords - 1);
+
+                for (int i = index; i < last; i++) {
+                    sb.append(words[i]);
+                    if (i != last - 1) {
+                        for (int s = 0; s < spaces + (i - index < extra ? 1 : 0); s++) {
+                            sb.append(" ");
+                        }
+                    }
+                }
+            }
+
+            result.add(sb.toString());
+            index = last;
+        }
+
+        return result;
+    }
+}
