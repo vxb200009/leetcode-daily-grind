@@ -1,0 +1,318 @@
+class Matrix{
+     //Sudoko - using hashset
+    public boolean isValidSudoku(char[][] board) {
+        int n = 9;
+        HashSet<Character>[] rows = new HashSet[9];  ---> [{},{},{},...n{}]
+        HashSet<Character>[] columns = new HashSet[9];
+        HashSet<Character>[] boxes = new HashSet[9];
+
+        for(int i = 0 ; i<n ;i++){
+            rows[i] = new HashSet<>();
+            columns[i] = new HashSet<>();
+            boxes[i] =new HashSet<>();
+        }
+
+        for(int r = 0 ; r<n;r++){
+            for(int c = 0 ;c<n;c++){
+                char ch = board[r][c];
+
+                if(ch == '.') continue;
+
+                if(rows[r].contains(ch)) return false;
+                rows[r].add(ch);
+
+                if(columns[c].contains(ch)) return false;
+                columns[c].add(ch);
+
+                int idx = (r/3) * 3 + (c/3); // gives box index
+                if(boxes[idx].contains(ch)) return false;
+                boxes[idx].add(ch);
+
+            }
+        }
+
+        return true;
+        
+    }
+    public boolean isValidSudoku(char[][] board) { // using arrays
+        int N = 9;
+
+        // Use an array to record the status
+        int[][] rows = new int[N][N]; ---> [[],[],[],...[n]]
+        int[][] cols = new int[N][N];
+        int[][] boxes = new int[N][N];
+
+        for (int r = 0; r < N; r++) {
+            for (int c = 0; c < N; c++) {
+                // Check if the position is filled with number
+                if (board[r][c] == '.') {
+                    continue;
+                }
+                int pos = board[r][c] - '1'; // char to index converter
+
+                // Check the row
+                if (rows[r][pos] == 1) {
+                    return false;
+                }
+                rows[r][pos] = 1;
+
+                // Check the column
+                if (cols[c][pos] == 1) {
+                    return false;
+                }
+                cols[c][pos] = 1;
+
+                // Check the box
+                int idx = (r / 3) * 3 + c / 3;
+                if (boxes[idx][pos] == 1) {
+                    return false;
+                }
+                boxes[idx][pos] = 1;
+            }
+        }
+        return true;
+    }
+    public boolean isValidSudoku(char[][] board) { // using bitwise
+        int n = 9;
+        int[] rows = new int[n]; [0000000n,....,n]
+        int[] columns = new int[n];
+        int[] boxes = new int[n];
+
+        for(int r = 0 ; r<n;r++){
+            for(int c = 0 ;c<n;c++){
+                char ch = board[r][c];
+
+                if(ch == '.') continue;
+
+                if((rows[r]& 1<<(ch-'0'))>0) return false; // & checks exact position value
+                rows[r]=rows[r]| 1<<(ch-'0');               // | adds the 1 to previous values in 001000
+
+                if((columns[c]& 1<<(ch-'0'))>0) return false;
+                columns[c]=columns[c]| 1<<(ch-'0');
+
+                int idx = (r/3) * 3 + (c/3);
+                if((boxes[idx]& 1<<(ch-'0'))>0) return false;
+                boxes[idx]=boxes[idx]| 1<<(ch-'0');
+
+            }
+        }
+
+        return true;
+        
+    }
+
+    // spiral matrix using boundaries
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> result = new ArrayList<>();
+        int rows = matrix.length;
+        int columns = matrix[0].length;
+        int up = 0;
+        int left = 0;
+        int right = columns - 1;
+        int down = rows - 1;
+
+        while (result.size() < rows * columns) {
+            // Traverse from left to right.
+            for (int col = left; col <= right; col++) {
+                result.add(matrix[up][col]);
+            }
+            // Traverse downwards.
+            for (int row = up + 1; row <= down; row++) {
+                result.add(matrix[row][right]);
+            }
+            // Make sure we are now on a different row.
+            if (up != down) {
+                // Traverse from right to left.
+                for (int col = right - 1; col >= left; col--) {
+                    result.add(matrix[down][col]);
+                }
+            }
+            // Make sure we are now on a different column.
+            if (left != right) {
+                // Traverse upwards.
+                for (int row = down - 1; row > up; row--) {
+                    result.add(matrix[row][left]);
+                }
+            }
+            left++;
+            right--;
+            up++;
+            down--;
+        }
+
+        return result;
+    }
+
+    //rotate matrix using boundaries
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+
+        for (int r = 0; r < (n + 1) / 2; r++) {
+            for (int c = 0; c< n / 2; c++) {
+                int temp = matrix[n-1-c][r];
+                matrix[n-1-c][r] = matrix[n-1-r][n-1-c];
+                matrix[n-1-r][n-1-c] = matrix[c][n-1-r];
+                matrix[c][n-1-r]=matrix[r][c];
+                matrix[r][c]=temp;
+            }
+        }
+        
+    }
+
+    // Transpose + reflect = 90 degrees
+    public void rotate(int[][] matrix) {
+        transpose(matrix);
+        reflect(matrix);
+    }
+    public void transpose(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int tmp = matrix[j][i];
+                matrix[j][i] = matrix[i][j];
+                matrix[i][j] = tmp;
+            }
+        }
+    }
+    public void reflect(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n / 2; j++) {  // jsut swap the exact opp elements in the same row
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[i][n - j - 1];
+                matrix[i][n - j - 1] = tmp;
+            }
+        }
+    }
+
+    // set zeros to cell which contains 0 using hashset
+    public void setZeroes(int[][] matrix) {
+        int R = matrix.length;
+        int C = matrix[0].length;
+        Set<Integer> rows = new HashSet<Integer>();
+        Set<Integer> cols = new HashSet<Integer>();
+
+        // Essentially, we mark the rows and columns that are to be made zero
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                if (matrix[i][j] == 0) {
+                    rows.add(i);
+                    cols.add(j);
+                }
+            }
+        }
+
+        // Iterate over the array once again and using the rows and cols sets, update the elements.
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                if (rows.contains(i) || cols.contains(j)) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    }
+    // without using hashset
+    public void setZeroes(int[][] matrix) {
+        Boolean isCol = false;
+        int R = matrix.length;
+        int C = matrix[0].length;
+
+        for (int i = 0; i < R; i++) {
+            // Since first cell for both first row and first column is the same i.e. matrix[0][0]
+            // We can use an additional variable for either the first row/column.
+            // For this solution we are using an additional variable for the first column
+            // and using matrix[0][0] for the first row.
+            if (matrix[i][0] == 0) {
+                isCol = true;
+            }
+
+            for (int j = 1; j < C; j++) {
+                // If an element is zero, we set the first element of the corresponding row and column to 0
+                if (matrix[i][j] == 0) {
+                    matrix[0][j] = 0;
+                    matrix[i][0] = 0;
+                }
+            }
+        }
+
+        // Iterate over the array once again and using the first row and first column, update the elements.
+        for (int i = 1; i < R; i++) {
+            for (int j = 1; j < C; j++) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+
+        // See if the first row needs to be set to zero as well
+        if (matrix[0][0] == 0) {
+            for (int j = 0; j < C; j++) {
+                matrix[0][j] = 0;
+            }
+        }
+
+        // See if the first column needs to be set to zero as well
+        if (isCol) {
+            for (int i = 0; i < R; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+
+    // game of life with zero space
+    public void gameOfLife(int[][] board) {
+
+        // Neighbors array to find 8 neighboring cells for a given cell
+        int[] neighbors = {0, 1, -1};
+
+        int rows = board.length;
+        int cols = board[0].length;
+
+        // Iterate through board cell by cell.
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+
+                // For each cell count the number of live neighbors.
+                int liveNeighbors = 0;
+
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+
+                        if (!(neighbors[i] == 0 && neighbors[j] == 0)) {
+                            int r = (row + neighbors[i]);
+                            int c = (col + neighbors[j]);
+
+                            // Check the validity of the neighboring cell.
+                            // and whether it was originally a live cell.
+                            if ((r < rows && r >= 0) && (c < cols && c >= 0) && (Math.abs(board[r][c]) == 1)) {
+                                liveNeighbors += 1;
+                            }
+                        }
+                    }
+                }
+
+                // Rule 1 or Rule 3
+                if ((board[row][col] == 1) && (liveNeighbors < 2 || liveNeighbors > 3)) {
+                    // -1 signifies the cell is now dead but originally was live.
+                    board[row][col] = -1;
+                }
+                // Rule 4
+                if (board[row][col] == 0 && liveNeighbors == 3) {
+                    // 2 signifies the cell is now live but was originally dead.
+                    board[row][col] = 2;
+                }
+            }
+        }
+
+        // Get the final representation for the newly updated board.
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (board[row][col] > 0) {
+                    board[row][col] = 1;
+                } else {
+                    board[row][col] = 0;
+                }
+            }
+        }
+    }
+}
