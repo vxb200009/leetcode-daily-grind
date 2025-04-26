@@ -28,7 +28,3 @@ Here, I am documenting my journey of solving the **Top 150 LeetCode problems** t
 - **Java 8+**
 - **LeetCode Online Judge**
 - **GitHub** (for version control and daily commits)
-
----
-
-## 🧩 Folder Structure
