@@ -32,4 +32,24 @@ class RightSideView {
         }
         return rightside;
     }
+
+    // dfs way - faster
+    // private void dfs(TreeNode node,int d,List<Integer>res){
+    //     if(node==null)
+    //         return;
+        
+    //     if(res.size()==d)
+    //         res.add(node.val);
+
+    //     dfs(node.right,d+1,res);
+    //     dfs(node.left,d+1,res);
+
+    // }
+    // public List<Integer> rightSideView(TreeNode root) {
+    //     if(root==null) return new ArrayList<Integer>();
+    //     List<Integer> res = new ArrayList<>();
+    //     int depth =0;
+    //     dfs(root,depth,res);
+    //     return res;
+    // }
 }
