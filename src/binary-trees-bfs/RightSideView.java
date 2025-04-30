@@ -1,14 +1,30 @@
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+
 class RightSideView {
+    public class TreeNode {
+        int val;
+         TreeNode left;
+          TreeNode right;
+          TreeNode() {}
+          TreeNode(int val) { this.val = val; }
+          TreeNode(int val, TreeNode left, TreeNode right) {
+              this.val = val;
+              this.left = left;
+              this.right = right;
+          }
+    }
 
     public List<Integer> rightSideView(TreeNode root) {
         if (root == null) return new ArrayList<Integer>();
 
-        ArrayDeque<TreeNode> queue = new ArrayDeque() {
+        ArrayDeque<TreeNode> queue = new ArrayDeque<>() {
             {
                 offer(root);
             }
         };
-        List<Integer> rightside = new ArrayList();
+        List<Integer> rightside = new ArrayList<>();
 
         while (!queue.isEmpty()) {
             int levelLength = queue.size();
