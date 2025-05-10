@@ -1,5 +1,6 @@
 public class LongRepCharReplace {
 
+    // Sliding window faster with while
     public int characterReplacement(String s, int k) {
         int len = s.length();
         int[] count = new int[26];
