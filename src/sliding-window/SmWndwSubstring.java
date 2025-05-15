@@ -1,6 +1,41 @@
 import java.util.HashMap;
 
 public class SmWndwSubstring {
+     // space is O(1) only one hashMap
+     public String minWindow(String s, String t) {
+        int n=s.length();
+        int m=t.length();
+        int l=0,r=0;
+        String res="";
+        int cnt=0;
+        int min_Len=Integer.MAX_VALUE;
+        int startIndex=-1;
+        HashMap<Character,Integer> h1=new HashMap<>();
+        for(int i=0;i<m;i++){
+            h1.put(t.charAt(i),h1.getOrDefault(t.charAt(i),0)+1);
+        }
+        while(r<n){
+            char ch=s.charAt(r);
+            if(h1.containsKey(ch)&& h1.get(ch)>0){
+                cnt++;
+            }
+            h1.put(ch,h1.getOrDefault(ch,0)-1);
+            while(cnt==m){
+                if((r-l+1)<min_Len){
+                    min_Len=r-l+1;
+                    startIndex=l;
+                    }
+                
+                h1.put(s.charAt(l),h1.getOrDefault(s.charAt(l),0)+1);
+                if(h1.get(s.charAt(l))>0){
+                    cnt--;
+                }
+                l++;
+            }
+            r++;
+        }
+         return startIndex==-1?"":s.substring(startIndex,startIndex+min_Len);
+    }
    
 
     // space isO(s+t)
