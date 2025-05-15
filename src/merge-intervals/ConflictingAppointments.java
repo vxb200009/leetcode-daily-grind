@@ -1,6 +1,6 @@
 
 public class ConflictingAppointments {
-    // only for less maxEnd value case
+    // only for less maxEnd value case else just sort and check
     static boolean isIntersect(int[][] intervals) {
         int n = intervals.length;
         
