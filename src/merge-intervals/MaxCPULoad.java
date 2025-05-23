@@ -13,7 +13,6 @@ class Job{
         this.cpuLoad=cpuLoad;
     }
 }
-
 public class MaxCPULoad {
     
     public static int findMaxCPULoad(List<Job> jobs)
