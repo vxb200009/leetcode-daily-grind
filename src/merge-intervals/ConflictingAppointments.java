@@ -24,7 +24,6 @@ public class ConflictingAppointments {
             // decrement the end time
             arr[end + 1] -= 1;
         }
-        
         // iterate over the array and
         // calculate the prefix sum
         for (int i = 1; i <= maxEnd; i++) {
