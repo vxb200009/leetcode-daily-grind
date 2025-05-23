@@ -36,6 +36,7 @@ public class AnagramInString {
       }
 
 
+    // // same as of the permutations problem but different approach
     // public List<Integer> findAnagrams(String s, String p) {
     //     if(p.length()>s.length())
     //         return new ArrayList();
