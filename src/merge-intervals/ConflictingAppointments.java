@@ -9,7 +9,6 @@ public class ConflictingAppointments {
         for (int i = 0; i < n; i++) {
             maxEnd = Math.max(maxEnd, intervals[i][1]);
         }
-        
         // create an array of size maxEnd
         // and initialize it with 0
         int[] arr = new int[maxEnd + 2];
