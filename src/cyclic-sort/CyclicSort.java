@@ -1,4 +1,6 @@
 class CyclicSort{
+
+    // cyclic sort
     static void sortArr(int[] arr) {
         int n = arr.length;
       
