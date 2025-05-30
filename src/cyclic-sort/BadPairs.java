@@ -1,4 +1,6 @@
 class BadPairs{
+
+    // using hashmap
     public long countBadPairs(int[] nums) {
         long badPairs = 0;
         Map<Integer, Integer> diffCount = new HashMap<>();
