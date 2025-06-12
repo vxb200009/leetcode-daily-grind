@@ -9,10 +9,10 @@ class UnwantedDuplicates{
         int j = 1; // Pointer to track position for valid elements
         int count = 1; // Count of occurrences of the current element
 
-        while(i<nums.length){
-            if(nums[i]==nums[i-1]){
+        while (i < nums.length) {
+            if (nums[i] == nums[i - 1]) {
                 count++;
-                if(count>2){
+                if (count > 2) {
                     i++;
                     continue;
                 }
