@@ -16,13 +16,16 @@ class UnwantedDuplicates{
                     i++;
                     continue;
                 }
-            }else{
-                count=1;
+            } else {
+                count = 1;
             }
-            nums[j]=nums[i];
-            i++;
+            nums[j] = nums[i];
             j++;
+            i++;
         }
+
+        // Java arrays can't be resized like C++ vectors,
+        // so we return the size directly.
         return j;
     }
 }
