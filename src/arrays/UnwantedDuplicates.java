@@ -1,4 +1,5 @@
 class UnwantedDuplicates{
+    // time complexity O(n) and space - O(1)
     public int removeDuplicates(int[] nums) {
         if(nums.length==0) return 0;
 
