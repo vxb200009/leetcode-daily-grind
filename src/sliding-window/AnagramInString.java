@@ -4,6 +4,7 @@ import java.util.List;
 
 public class AnagramInString {
 
+  //t-O(n) & S-O(1)
     public List<Integer> findAnagrams(String s, String p) {
         int ns = s.length(), np = p.length();
         if (ns < np) return new ArrayList();
