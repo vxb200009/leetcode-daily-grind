@@ -1,10 +1,13 @@
 class UnwantedDuplicates{
     // time complexity O(n) and space - O(1)
     public int removeDuplicates(int[] nums) {
-        if(nums.length==0) return 0;
+        if (nums.length == 0) {
+            return 0;
+        }
 
-        int i=1,j=1;
-        int count=1;
+        int i = 1; // Pointer to iterate through the array
+        int j = 1; // Pointer to track position for valid elements
+        int count = 1; // Count of occurrences of the current element
 
         while(i<nums.length){
             if(nums[i]==nums[i-1]){
